@@ -31,15 +31,29 @@ app.use(express.json());
 
 // Routes
 app.get("/", async (req, res) => {
-  exec("dokku ps:rebuild portfolio", (err, stdout, stderr) => {
-    if (err) {
-      res.send(err);
+  // Start the command process
+  const process = spawn("dokku ps:rebuild portfolio", []);
 
-      // node couldn't execute the command
-      return;
-    }
+  // Set the response headers for streaming
+  res.setHeader("Content-Type", "text/plain");
 
-    res.send(`stdout: ${stdout}`);
+  // Send output as data comes in
+  process.stdout.on("data", (data) => {
+    res.write(data); // Write the output chunk to the response
+  });
+
+  process.stderr.on("data", (data) => {
+    res.write(`Error: ${data}`);
+  });
+
+  process.on("close", (code) => {
+    res.write(`\nProcess exited with code ${code}`);
+    res.end(); // End the response once the process completes
+  });
+
+  process.on("error", (error) => {
+    res.write(`\nFailed to start process: ${error.message}`);
+    res.end(); // End the response in case of an error
   });
 });
 
