@@ -6,7 +6,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 const port = process.env.PORT || 8080;
 
