@@ -31,6 +31,10 @@ app.use(
 // Parsing
 app.use(express.json());
 
+app.get("/health", (req, res) => {
+  res.send("OK");
+});
+
 // Routes
 app.post("/exec", async (req, res) => {
   if (req.body.KEY !== process.env.WEBHOOK_KEY) {
