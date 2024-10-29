@@ -5,8 +5,9 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const axios = require("axios");
 
-const { spawn } = require("child_process");
+const { exec } = require("child_process");
 
 const port = process.env.PORT || 8080;
 
@@ -31,45 +32,33 @@ app.use(
 app.use(express.json());
 
 // Routes
-app.get("/", async (req, res) => {
-  res.send("hello");
-  return;
-  // Command to run with arguments separated
-  const command = "dokku";
-  const args = ["ps:rebuild", "portfolio"];
-
-  // Start the command process
-  const process = spawn(command, args, { shell: true });
-
-  // Set response headers for streaming output
-  res.setHeader("Content-Type", "text/plain");
-
-  // Stream the output in real-time to the client
-  process.stdout.on("data", (data) => {
-    res.write(data); // Send each output chunk to the response
-  });
-
-  process.stderr.on("data", (data) => {
-    res.write(`Error: ${data}`);
-  });
-
-  process.on("close", (code) => {
-    res.write(`\nProcess exited with code ${code}`);
-    res.end(); // Close the response once the process completes
-  });
-
-  process.on("error", (error) => {
-    res.write(`\nFailed to start process: ${error.message}`);
-    res.end(); // End the response in case of an error
-  });
-});
-
-app.get("/ip", (request, response) => response.send(request.ip));
-
-// Routes
 app.post("/exec", async (req, res) => {
-  console.log(req.body);
-  res.send("success");
+  if (req.body.KEY !== process.env.WEBHOOK_KEY) {
+    res.status(400).send("wrong key");
+    return;
+  }
+
+  exec("dokku ps:rebuild portfolio", async (err, stdout, stderr) => {
+    if (err) {
+      console.log(err);
+
+      await axios.post(
+        "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
+        { status: "error" }
+      );
+
+      return;
+    }
+    console.log("done");
+
+    await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
+      status: "success",
+    });
+  });
+
+  console.log("scheduled");
+
+  res.send("exec scheduled");
 });
 
 app.listen(port, () => {
