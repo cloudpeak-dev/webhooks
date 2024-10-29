@@ -14,7 +14,7 @@ const port = process.env.PORT || 8080;
 const app = express();
 
 // Security Setup
-app.disable("x-powered-by");
+app.set("trust proxy");
 app.use(helmet());
 app.use(cors());
 app.use(
@@ -59,6 +59,12 @@ app.get("/", async (req, res) => {
     res.write(`\nFailed to start process: ${error.message}`);
     res.end(); // End the response in case of an error
   });
+});
+
+// Routes
+app.post("/exec", async (req, res) => {
+  console.log(req.body);
+  res.send("success");
 });
 
 app.listen(port, () => {
