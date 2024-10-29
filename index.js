@@ -31,15 +31,19 @@ app.use(express.json());
 
 // Routes
 app.get("/", async (req, res) => {
-  // Start the command process
-  const process = spawn("dokku ps:rebuild portfolio", []);
+  // Command to run with arguments separated
+  const command = "dokku";
+  const args = ["ps:rebuild", "portfolio"];
 
-  // Set the response headers for streaming
+  // Start the command process
+  const process = spawn(command, args, { shell: true });
+
+  // Set response headers for streaming output
   res.setHeader("Content-Type", "text/plain");
 
-  // Send output as data comes in
+  // Stream the output in real-time to the client
   process.stdout.on("data", (data) => {
-    res.write(data); // Write the output chunk to the response
+    res.write(data); // Send each output chunk to the response
   });
 
   process.stderr.on("data", (data) => {
@@ -48,7 +52,7 @@ app.get("/", async (req, res) => {
 
   process.on("close", (code) => {
     res.write(`\nProcess exited with code ${code}`);
-    res.end(); // End the response once the process completes
+    res.end(); // Close the response once the process completes
   });
 
   process.on("error", (error) => {
