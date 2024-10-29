@@ -14,7 +14,8 @@ const port = process.env.PORT || 8080;
 const app = express();
 
 // Security Setup
-app.set("trust proxy");
+app.set("trust proxy", 1 /* number of proxies between user and server */);
+
 app.use(helmet());
 app.use(cors());
 app.use(
@@ -31,6 +32,8 @@ app.use(express.json());
 
 // Routes
 app.get("/", async (req, res) => {
+  res.send("hello");
+  return;
   // Command to run with arguments separated
   const command = "dokku";
   const args = ["ps:rebuild", "portfolio"];
@@ -60,6 +63,8 @@ app.get("/", async (req, res) => {
     res.end(); // End the response in case of an error
   });
 });
+
+app.get("/ip", (request, response) => response.send(request.ip));
 
 // Routes
 app.post("/exec", async (req, res) => {
