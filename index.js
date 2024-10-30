@@ -7,7 +7,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 const port = process.env.PORT || 8080;
 
@@ -31,38 +31,56 @@ app.use(
 // Parsing
 app.use(express.json());
 
-app.get("/health", (req, res) => {
-  res.send("OK");
+app.get("/", (req, res) => {
+  res.send("Health: OK");
 });
 
 // Routes
+let outputLog = ""; // Variable to store command output
+
 app.post("/exec", async (req, res) => {
   if (req.body.KEY !== process.env.WEBHOOK_KEY) {
     res.status(400).send("wrong key");
+
     return;
   }
 
-  exec("dokku ps:rebuild portfolio", async (err, stdout, stderr) => {
-    if (err) {
-      console.log(err);
+  outputLog = ""; // Reset the log
 
-      await axios.post(
-        "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
-        { status: "error" }
-      );
+  // Command to run with arguments separated
+  const command = "dokku";
+  const args = ["ps:rebuild", "portfolio"];
 
-      return;
-    }
-    console.log("done");
+  // Start the command process
+  const process = spawn(command, args, { shell: true });
+
+  process.stdout.on("data", (data) => {
+    outputLog += data.toString(); // Append output to the log
+  });
+
+  process.stderr.on("data", async (data) => {
+    await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
+      status: "error",
+    });
+
+    outputLog += `Error: ${data.toString()}`; // Append errors to the log
+  });
+
+  process.on("close", async (code) => {
+    outputLog += `\nProcess exited with code ${code}`;
 
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "success",
     });
   });
 
-  console.log("scheduled");
+  res.send("Command started");
+});
 
-  res.send("exec scheduled");
+app.get("/output", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+
+  res.send(outputLog);
 });
 
 app.listen(port, () => {
