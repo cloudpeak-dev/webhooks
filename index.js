@@ -59,6 +59,7 @@ app.post("/exec", async (req, res) => {
   });
 
   spawn_process.stderr.on("data", async (data) => {
+    console.log(data);
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "error",
     });
