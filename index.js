@@ -52,13 +52,13 @@ app.post("/exec", async (req, res) => {
   const args = ["ps:rebuild", "portfolio"];
 
   // Start the command process
-  const process = spawn(command, args, { shell: true });
+  const spawn_process = spawn(command, args, { shell: true });
 
-  process.stdout.on("data", (data) => {
+  spawn_process.stdout.on("data", (data) => {
     outputLog += data.toString(); // Append output to the log
   });
 
-  process.stderr.on("data", async (data) => {
+  spawn_process.stderr.on("data", async (data) => {
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "error",
     });
@@ -66,7 +66,7 @@ app.post("/exec", async (req, res) => {
     outputLog += `Error: ${data.toString()}`; // Append errors to the log
   });
 
-  process.on("close", async (code) => {
+  spawn_process.on("close", async (code) => {
     outputLog += `\nProcess exited with code ${code}`;
 
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
