@@ -83,10 +83,9 @@ app.post("/exec", async (req, res) => {
 });
 
 app.get("/output", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
-  res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.setHeader("Transfer-Encoding", "chunked");
 
   // Send initial data
   res.write(`data: ${outputLog}\n\n`);
