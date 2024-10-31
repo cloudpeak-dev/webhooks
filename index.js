@@ -57,6 +57,7 @@ app.post("/exec", async (req, res) => {
   const spawn_process = spawn(command, args, { shell: true });
 
   spawn_process.stdout.on("data", (data) => {
+    console.log(data.toString());
     outputLog += data.toString(); // Append output to the log
   });
 
@@ -83,27 +84,30 @@ app.post("/exec", async (req, res) => {
 });
 
 app.get("/output", (req, res) => {
-  res.setHeader("Content-Type", "text/plain");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+  // res.setHeader("Content-Type", "text/event-stream");
+  // res.setHeader("Cache-Control", "no-cache");
+  // res.setHeader("Connection", "keep-alive");
 
-  // Function to send data chunks at intervals
-  const intervalId = setInterval(() => {
-    if (outputLog) {
-      res.write(outputLog); // Send accumulated output
-      outputLog = ""; // Clear log after sending
-    }
-    if (!isRunning) {
-      clearInterval(intervalId); // Stop the interval when done
-      res.write("\nCommand completed.\n");
-      res.end(); // End the response
-    }
-  }, 1000);
+  // // Send initial data
+  // res.write(`data: ${outputLog}\n\n`);
 
-  // Clear interval if client closes the connection
-  req.on("close", () => {
-    clearInterval(intervalId);
-  });
+  // // Interval to check for new output every second
+  // const intervalId = setInterval(() => {
+  //   if (outputLog) {
+  //     res.write(`data: ${outputLog}\n\n`);
+  //     outputLog = ""; // Clear the log after sending to prevent duplicate data
+  //   }
+  //   if (!isRunning) {
+  //     clearInterval(intervalId); // Stop sending updates once the command completes
+  //     res.write("event: end\ndata: Command completed\n\n");
+  //     res.end();
+  //   }
+  // }, 1000);
+
+  // req.on("close", () => {
+  //   clearInterval(intervalId);
+  // });
+  res.send(outputLog);
 });
 
 app.listen(port, () => {
