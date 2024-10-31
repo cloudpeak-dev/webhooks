@@ -83,26 +83,24 @@ app.post("/exec", async (req, res) => {
 });
 
 app.get("/output", (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Content-Type", "text/plain");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  // Send initial data
-  res.write(`data: ${outputLog}\n\n`);
-
-  // Interval to check for new output every second
+  // Function to send data chunks at intervals
   const intervalId = setInterval(() => {
     if (outputLog) {
-      res.write(`data: ${outputLog}\n\n`);
-      outputLog = ""; // Clear the log after sending to prevent duplicate data
+      res.write(outputLog); // Send accumulated output
+      outputLog = ""; // Clear log after sending
     }
     if (!isRunning) {
-      clearInterval(intervalId); // Stop sending updates once the command completes
-      res.write("event: end\ndata: Command completed\n\n");
-      res.end();
+      clearInterval(intervalId); // Stop the interval when done
+      res.write("\nCommand completed.\n");
+      res.end(); // End the response
     }
   }, 1000);
 
+  // Clear interval if client closes the connection
   req.on("close", () => {
     clearInterval(intervalId);
   });
