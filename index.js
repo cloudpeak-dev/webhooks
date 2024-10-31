@@ -59,10 +59,10 @@ app.post("/exec", async (req, res) => {
   });
 
   spawn_process.stderr.on("data", async (data) => {
-    console.log(data);
-    await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
-      status: "error",
-    });
+    console.log(data.toString());
+    // await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
+    //   status: "error",
+    // });
 
     outputLog += `Error: ${data.toString()}`; // Append errors to the log
   });
@@ -81,7 +81,7 @@ app.post("/exec", async (req, res) => {
 app.get("/output", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
 
-  res.send(outputLog);
+  res.write(outputLog);
 });
 
 app.listen(port, () => {
