@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
 
 // Routes
 let outputLog = ""; // Variable to store command output
+let isRunning = false; // Track if the command is running
 
 app.post("/exec", async (req, res) => {
   if (req.body.KEY !== process.env.WEBHOOK_KEY) {
@@ -46,6 +47,7 @@ app.post("/exec", async (req, res) => {
   }
 
   outputLog = ""; // Reset the log
+  isRunning = true;
 
   // Command to run with arguments separated
   const command = "dokku";
@@ -73,6 +75,8 @@ app.post("/exec", async (req, res) => {
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "success",
     });
+
+    isRunning = false;
   });
 
   res.send("Command started");
@@ -83,13 +87,23 @@ app.get("/output", (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
+  // Send initial data
+  res.write(`data: ${outputLog}\n\n`);
+
+  // Interval to check for new output every second
   const intervalId = setInterval(() => {
-    res.write(outputLog);
-  }, 100);
+    if (outputLog) {
+      res.write(`data: ${outputLog}\n\n`);
+      outputLog = ""; // Clear the log after sending to prevent duplicate data
+    }
+    if (!isRunning) {
+      clearInterval(intervalId); // Stop sending updates once the command completes
+      res.write("event: end\ndata: Command completed\n\n");
+      res.end();
+    }
+  }, 1000);
 
   req.on("close", () => {
-    console.log("close");
-
     clearInterval(intervalId);
   });
 });
