@@ -46,7 +46,7 @@ app.post("/exec", async (req, res) => {
   outputLog = ""; // Reset the log
 
   // Command to run with arguments separated
-  const command = "dokkuu";
+  const command = "dokku";
   const args = ["ps:rebuild", "portfolio"];
 
   try {
