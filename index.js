@@ -54,7 +54,7 @@ app.post("/exec", async (req, res) => {
 
   spawn_process.stdout.on("data", (data) => {
     const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
-    outputLog += cleanData; // Append output to the log
+    outputLog += cleanData + "\n"; // Append output to the log
   });
 
   spawn_process.stderr.on("data", async (data) => {
@@ -62,11 +62,11 @@ app.post("/exec", async (req, res) => {
     //   status: "error",
     // });
 
-    outputLog += `Error: ${data.toString()}`; // Append errors to the log
+    outputLog += `Error: ${data.toString()} \n`; // Append errors to the log
   });
 
   spawn_process.on("close", async (code) => {
-    outputLog += `\nProcess exited with code ${code}`;
+    outputLog += `Process exited with code ${code}`;
 
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "success",
