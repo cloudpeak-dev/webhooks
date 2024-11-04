@@ -49,30 +49,40 @@ app.post("/exec", async (req, res) => {
   const command = "dokku";
   const args = ["ps:rebuild", "portfolio"];
 
-  // Start the command process
-  const spawn_process = spawn(command, args, { shell: true });
+  try {
+    // Start the command process
+    const spawn_process = spawn(command, args, { shell: true });
 
-  spawn_process.stdout.on("data", (data) => {
-    const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
-    console.log(data.toString());
-    outputLog += cleanData + "\n"; // Append output to the log
-  });
-
-  spawn_process.stderr.on("data", async (data) => {
-    // await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
-    //   status: "error",
-    // });
-
-    outputLog += `Error: ${data.toString()} \n`; // Append errors to the log
-  });
-
-  spawn_process.on("close", async (code) => {
-    outputLog += `Process exited with code ${code}`;
-
-    await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
-      status: "success",
+    spawn_process.stdout.on("data", (data) => {
+      const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
+      outputLog += cleanData + "\n"; // Append output to the log
     });
-  });
+
+    spawn_process.stderr.on("data", async (data) => {
+      // await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
+      //   status: "error",
+      // });
+
+      outputLog += `Error: ${data.toString()} \n`; // Append errors to the log
+    });
+
+    spawn_process.on("close", async (code) => {
+      outputLog += `Process exited with code ${code}`;
+
+      await axios.post(
+        "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
+        {
+          status: "success",
+        }
+      );
+    });
+
+    spawn_process.on("error", function (err) {
+      console.error("Oh no: ", err);
+    });
+  } catch (err) {
+    console.error("Oh no try/catch: ", err);
+  }
 
   res.send("Command started");
 });
