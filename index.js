@@ -1,14 +1,11 @@
-require("dotenv").config();
-require("express-async-errors");
-
-const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
-const rateLimit = require("express-rate-limit");
-const axios = require("axios");
-const stripAnsi = require("strip-ansi");
-
-const { spawn } = require("child_process");
+import "express-async-errors";
+import stripAnsi from "strip-ansi";
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
+import axios from "axios";
+import { spawn } from "child_process";
 
 const port = process.env.PORT || 8080;
 

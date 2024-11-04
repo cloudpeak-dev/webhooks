@@ -1,5 +1,6 @@
 {
   "name": "portfolio-webhook",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,7 +13,6 @@
   "dependencies": {
     "axios": "^1.7.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.4.1",
