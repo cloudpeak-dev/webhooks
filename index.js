@@ -55,6 +55,7 @@ app.post("/exec", async (req, res) => {
   const spawn_process = spawn(command, args, { shell: true });
 
   spawn_process.stdout.on("data", (data) => {
+    console.log(data.toString());
     outputLog += data.toString(); // Append output to the log
   });
 
