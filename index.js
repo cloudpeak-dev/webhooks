@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
+const stripAnsi = require("strip-ansi");
 
 const { spawn } = require("child_process");
 
@@ -55,8 +56,8 @@ app.post("/exec", async (req, res) => {
   const spawn_process = spawn(command, args, { shell: true });
 
   spawn_process.stdout.on("data", (data) => {
-    console.log(data.toString());
-    outputLog += data.toString(); // Append output to the log
+    const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
+    outputLog += cleanData; // Append output to the log
   });
 
   spawn_process.stderr.on("data", async (data) => {
