@@ -59,29 +59,41 @@ app.post("/exec", async (req, res) => {
     });
 
     spawn_process.stderr.on("data", async (data) => {
-      // await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
-      //   status: "error",
-      // });
-
       outputLog += `Error: ${data.toString()} \n`; // Append errors to the log
     });
 
     spawn_process.on("close", async (code) => {
       outputLog += `Process exited with code ${code}`;
 
+      if (code === 0) {
+        await axios.post(
+          "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
+          {
+            status: "success",
+          }
+        );
+      } else {
+        await axios.post(
+          "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
+          {
+            status: "error",
+          }
+        );
+      }
+    });
+
+    spawn_process.on("error", async (err) => {
       await axios.post(
         "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
         {
-          status: "success",
+          status: "error",
         }
       );
     });
-
-    spawn_process.on("error", function (err) {
-      console.error("Oh no: ", err);
-    });
   } catch (err) {
-    console.error("Oh no try/catch: ", err);
+    await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
+      status: "error",
+    });
   }
 
   res.send("Command started");
