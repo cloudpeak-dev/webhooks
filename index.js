@@ -54,7 +54,7 @@ app.post("/exec", async (req, res) => {
 
   spawn_process.stdout.on("data", (data) => {
     const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
-    console.log(cleanData);
+    console.log(data.toString());
     outputLog += cleanData + "\n"; // Append output to the log
   });
 
