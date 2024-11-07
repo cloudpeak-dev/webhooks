@@ -6,7 +6,9 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import axios from "axios";
 import { spawn } from "child_process";
+import path from "path";
 
+const __dirname = path.resolve();
 const port = process.env.PORT || 8080;
 
 // Create the express app
@@ -29,14 +31,17 @@ app.use(
 // Parsing
 app.use(express.json());
 
-app.get("/", (req, res) => {
+// There are relative links in index.html. Therefore, we define static link from where to take the files
+app.use(express.static(path.resolve(__dirname, "./client/dist")));
+
+app.get("/api", (req, res) => {
   res.send("Health: OK");
 });
 
 // Routes
 let outputLog = ""; // Variable to store command output
 
-app.post("/exec", async (req, res) => {
+app.post("/api/exec", async (req, res) => {
   if (req.body.KEY !== process.env.WEBHOOK_KEY) {
     res.status(400).send("wrong key");
 
@@ -99,10 +104,14 @@ app.post("/exec", async (req, res) => {
   res.send("Command started");
 });
 
-app.get("/output", (req, res) => {
+app.get("/api/output", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
 
   res.send(outputLog);
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/dist", "index.html"));
 });
 
 app.listen(port, () => {
