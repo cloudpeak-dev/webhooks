@@ -22,7 +22,7 @@ app.use(cors());
 app.use(
   rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 500, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   })
@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "./client/dist")));
 
 app.get("/api", (req, res) => {
-  res.send("Health: OK");
+  res.json({ success: true });
 });
 
 // Routes
