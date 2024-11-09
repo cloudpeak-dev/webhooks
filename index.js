@@ -9,8 +9,8 @@ import { spawn } from "child_process";
 import path from "path";
 
 const __dirname = path.resolve();
-const port = process.env.PORT || 8080;
-
+const port = 8080;
+console.log(process.env.WEBHOOK_KEY);
 // Create the express app
 const app = express();
 
@@ -51,8 +51,8 @@ app.post("/api/exec", async (req, res) => {
   outputLog = ""; // Reset the log
 
   // Command to run with arguments separated
-  const command = "dokku";
-  const args = ["ps:rebuild", "portfolio"];
+  const command = "ssh";
+  const args = ["rokas@ssh.minitwit.fun", "-t", "'dokku ps:rebuild portfolio'"];
 
   try {
     // Start the command process

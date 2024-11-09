@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8084:8080"
+    volumes:
+      - ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro # Mount the private SSH key as read-only
+    environment:
+      - WEBHOOK_KEY=${WEBHOOK_KEY}
