@@ -50,7 +50,7 @@ COPY --from=builder /app/package*.json ./client
 RUN npm install --only=production
 
 # Expose the port that the Express server will listen on
-EXPOSE 5000
+EXPOSE 8080
 
 # Start the server
 CMD ["node", "index.js"]
