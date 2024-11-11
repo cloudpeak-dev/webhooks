@@ -1,5 +1,5 @@
 # Base image for building the application
-FROM node:20.11.1-alpine AS builder
+FROM node:20.11.1 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -17,10 +17,10 @@ COPY ./client/ .
 RUN npm run build
 
 # Base image for running the application
-FROM node:20.11.1-alpine
+FROM node:20.11.1
 
 # Install cloudflared in the container
-RUN apt-get update && apt-get install -y wget && \
+RUN apt update && apt install -y wget && \
   wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb && \
   dpkg -i cloudflared-linux-arm64.deb && \
   rm cloudflared-linux-arm64.deb
