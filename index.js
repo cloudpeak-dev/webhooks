@@ -10,7 +10,7 @@ import path from "path";
 
 const __dirname = path.resolve();
 const port = 8080;
-console.log(process.env.WEBHOOK_KEY);
+
 // Create the express app
 const app = express();
 
@@ -52,7 +52,7 @@ app.post("/api/exec", async (req, res) => {
 
   // Command to run with arguments separated
   const command = "ssh";
-  const args = ["rokas@ssh.minitwit.fun", "-t", "'dokku ps:rebuild portfolio'"];
+  const args = ["rokas@ssh.minitwit.fun", "-T", "'dokku ps:rebuild portfolio'"];
 
   try {
     // Start the command process

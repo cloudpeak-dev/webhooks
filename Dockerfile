@@ -1,5 +1,5 @@
 # Base image for building the application
-FROM node:20 AS builder
+FROM node:20.11.1-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY ./client/ .
 RUN npm run build
 
 # Base image for running the application
-FROM node:20
+FROM node:20.11.1-alpine
 
 # Install cloudflared in the container
 RUN apt-get update && apt-get install -y wget && \
@@ -50,7 +50,7 @@ COPY --from=builder /app/package*.json ./client
 RUN npm install --only=production
 
 # Expose the port that the Express server will listen on
-EXPOSE 8080
+EXPOSE 5000
 
 # Start the server
 CMD ["node", "index.js"]
