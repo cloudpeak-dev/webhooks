@@ -1,39 +1,28 @@
 import { useEffect, useState } from "react";
 
-import "./App.css";
-
 function App() {
-  const [isHealthy, setIsHealthy] = useState();
+  const [isHealthy, setIsHealthy] = useState(true);
   const [output, setOutput] = useState("");
 
   useEffect(() => {
     const handleFetch = async () => {
       const response = await fetch("/api/output");
 
-      const text = await response.text();
+      if (!response.ok) {
+        setIsHealthy(false);
+      }
 
+      const text = await response.text();
       setOutput(text);
     };
 
-    const interval = setInterval(async () => {
+    const intervalId = setInterval(async () => {
       await handleFetch();
     }, 1000);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalId);
     };
-  }, []);
-
-  useEffect(() => {
-    const handleFetch = async () => {
-      const response = await fetch("/api");
-
-      const data = await response.json();
-
-      setIsHealthy(data.success);
-    };
-
-    handleFetch();
   }, []);
 
   return (
@@ -52,9 +41,11 @@ function App() {
           <div>Webhook Status: {isHealthy ? "OK" : "Unavailable"}</div>
         </div>
 
-        <div className="container-wrapper min-h-0 text-center">
-          <div className="container">
-            <pre className="pre text-sm">{output}</pre>
+        <div className="border border-solid border-text p-5 bg-background h-full box-border flex justify-center items-start rounded-md min-h-0 text-center">
+          <div className="flex flex-col-reverse overflow-y-scroll max-h-full">
+            <pre className="w-full whitespace-pre-wrap m-0 text-sm">
+              {output}
+            </pre>
           </div>
         </div>
       </main>
