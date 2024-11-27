@@ -27,10 +27,10 @@ RUN apt update && apt install -y wget && \
 
 # Configure SSH
 RUN mkdir -p /root/.ssh && \
-  echo "Host ssh.minitwit.fun\n  ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> /root/.ssh/config
+  echo "Host ssh.cloudpeak.dev\n  ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> /root/.ssh/config
 
 # Add server's public key to known hosts
-RUN echo "ssh.minitwit.fun ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
+RUN echo "ssh.cloudpeak.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
 
 # Set the working directory
 WORKDIR /app
