@@ -25,6 +25,17 @@ function App() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   const handleFetch = async () => {
+  //     const response = await fetch("/api/outputs");
+  //     const result = await response.json();
+  //     console.log(result);
+  //     setOutput(result.results[0].log);
+  //   };
+
+  //   handleFetch();
+  // }, []);
+
   return (
     <div className="h-screen w-screen flex flex-col gap-10 p-5">
       <header className="text-xl">

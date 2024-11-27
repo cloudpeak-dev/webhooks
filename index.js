@@ -145,6 +145,24 @@ app.post("/api/exec", async (req, res) => {
   res.send("Command started");
 });
 
+app.get("/api/outputs", async (req, res) => {
+  const collection = await client.db("webhooks").collection("rebuild");
+  const b = await collection.find({}).toArray();
+
+  res.json({
+    results: b,
+  });
+});
+
+app.get("/api/meta", async (req, res) => {
+  const collection = await client.db("webhooks").collection("rebuild");
+  const b = await collection.find({}, { sort: { date: -1 } }).toArray();
+
+  res.json({
+    date: b[0].date,
+  });
+});
+
 app.get("/api/output", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
 
