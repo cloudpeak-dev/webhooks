@@ -9,9 +9,10 @@ import axios from "axios";
 import { spawn } from "child_process";
 import path from "path";
 import { MongoClient, ServerApiVersion } from "mongodb";
+import { Webhooks } from "@octokit/webhooks";
 
 const __dirname = path.resolve();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // Create the express app
 const app = express();
@@ -73,10 +74,66 @@ async function run() {
 }
 // run().catch(console.dir);
 
-app.post("/api/exec", async (req, res) => {
-  if (req.body.KEY !== process.env.WEBHOOK_KEY) {
-    res.status(400).send("wrong key");
+const webhooks = new Webhooks({
+  secret: process.env.GITHUB_WEBHOOK_SECRET,
+});
 
+app.post("/api/github", async (req, res) => {
+  const signature = req.headers["x-hub-signature-256"];
+  const body = await JSON.stringify(req.body);
+
+  // Validate that the request is coming from GitHub
+  if (!(await webhooks.verify(body, signature))) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+
+  outputLog = ""; // Reset the log
+  outputDate = new Date().toISOString(); // Set the date
+
+  const command = "ssh";
+  const args = [
+    "rokas@ssh.cloudpeak.dev",
+    "-T",
+    "'dokku git:sync --build portfolio https://github.com/rokaskasperavicius/rokaskasperavicius.git'",
+  ];
+
+  try {
+    // Start the command process
+    const spawn_process = spawn(command, args, { shell: true });
+
+    spawn_process.stdout.on("data", (data) => {
+      const cleanData = stripAnsi(data.toString()); // Strip ANSI codes
+      outputLog += cleanData + "\n"; // Append output to the log
+    });
+
+    spawn_process.stderr.on("data", async (data) => {
+      outputLog += `Error: ${data.toString()} \n`; // Append errors to the log
+    });
+
+    spawn_process.on("close", async (code) => {
+      outputLog += `Process exited with code ${code}`;
+
+      // Success
+      if (code === 0) {
+        const collection = await client.db("webhooks").collection("logs");
+        await collection.insertOne({
+          date: outputDate,
+          log: outputLog,
+          type: "github",
+        });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.send("Command started");
+});
+
+app.post("/api/exec", async (req, res) => {
+  if (req.body.SECRET !== process.env.DATOCMS_WEBHOOK_SECRET) {
+    res.status(401).send("Unauthorized");
     return;
   }
 
@@ -109,8 +166,12 @@ app.post("/api/exec", async (req, res) => {
 
       if (code === 0) {
         // Success
-        const collection = await client.db("webhooks").collection("rebuild");
-        await collection.insertOne({ date: outputDate, log: outputLog });
+        const collection = await client.db("webhooks").collection("logs");
+        await collection.insertOne({
+          date: outputDate,
+          log: outputLog,
+          type: "datocms",
+        });
 
         await axios.post(
           "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
