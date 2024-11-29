@@ -60,7 +60,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-    const collection = await client.db("webhooks").collection("rebuild");
+    const collection = await client.db("webhooks").collection("logs");
     const b = await collection.find({}).toArray();
 
     const insertResult = await collection.insertOne({});
@@ -207,7 +207,7 @@ app.post("/api/exec", async (req, res) => {
 });
 
 app.get("/api/outputs", async (req, res) => {
-  const collection = await client.db("webhooks").collection("rebuild");
+  const collection = await client.db("webhooks").collection("logs");
   const b = await collection.find({}).toArray();
 
   res.json({
@@ -216,7 +216,7 @@ app.get("/api/outputs", async (req, res) => {
 });
 
 app.get("/api/meta", async (req, res) => {
-  const collection = await client.db("webhooks").collection("rebuild");
+  const collection = await client.db("webhooks").collection("logs");
   const b = await collection.find({}, { sort: { date: -1 } }).toArray();
 
   res.json({
