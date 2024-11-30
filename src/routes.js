@@ -62,7 +62,7 @@ app.post("/datocms", async (req, res) => {
     return;
   }
 
-  const command = "dokku ps:rebuild portfolio'";
+  const command = "dokku ps:rebuild portfolio";
 
   try {
     exec(log, "datocms", command, async () => {

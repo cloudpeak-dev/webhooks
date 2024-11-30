@@ -7,7 +7,7 @@ export const exec = (log, type, command, successCallback) => {
   // TODO: Check first if there is no dokku lock set
 
   log.init();
-  console.log(command);
+
   try {
     const spawn_process = spawn(
       "ssh",
