@@ -6,7 +6,7 @@ function App() {
 
   useEffect(() => {
     const handleFetch = async () => {
-      const response = await fetch("/api/output");
+      const response = await fetch("/api/logs/current");
 
       if (!response.ok) {
         setIsHealthy(false);

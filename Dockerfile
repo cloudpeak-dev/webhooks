@@ -36,7 +36,7 @@ RUN echo "ssh.cloudpeak.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7g
 WORKDIR /app
 
 # Copy the server files
-COPY ./index.js ./
+COPY ./src/ ./src/
 COPY ./package.json ./
 COPY ./package-lock.json ./
 
@@ -53,4 +53,4 @@ RUN npm install --only=production
 EXPOSE 8080
 
 # Start the server
-CMD ["node", "index.js"]
+CMD ["node", "./src/index.js"]
