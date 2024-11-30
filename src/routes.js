@@ -1,5 +1,6 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
+import axios from "axios";
 
 import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
 import { DATOCMS_WEBHOOK_SECRET, GITHUB_WEBHOOK_SECRET } from "./constants.js";
