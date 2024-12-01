@@ -4,6 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path";
+import cors from "cors";
 
 import routes from "./routes.js";
 import { PORT } from "./constants.js";
@@ -17,6 +18,7 @@ const app = express();
 app.set("trust proxy", 1 /* number of proxies between user and server */);
 
 app.use(helmet());
+app.use(cors());
 app.use(
   rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
