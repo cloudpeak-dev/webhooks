@@ -47,7 +47,7 @@ app.post("/github", async (req, res) => {
     "dokku git:sync --build portfolio https://github.com/rokaskasperavicius/rokaskasperavicius.git";
 
   try {
-    exec(log, "github", command);
+    exec("github", command);
   } catch (error) {
     console.error(error);
   }
@@ -65,7 +65,7 @@ app.post("/datocms", async (req, res) => {
   const command = "dokku ps:rebuild portfolio";
 
   try {
-    exec(log, "datocms", command, async () => {
+    exec("datocms", command, async () => {
       await axios.post(
         "https://webhooks.datocms.com/2qpNGQSrtl/deploy-results",
         {

@@ -2,8 +2,9 @@ import stripAnsi from "strip-ansi";
 import { spawn } from "child_process";
 
 import { insertLog } from "./mongodb.js";
+import { log } from "./log.js";
 
-export const exec = (log, type, command, successCallback) => {
+export const exec = (type, command, successCallback) => {
   // TODO: Check first if there is no dokku lock set
 
   log.init();
