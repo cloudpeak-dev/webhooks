@@ -19,6 +19,9 @@ RUN npm run build
 # Base image for running the application
 FROM node:20.11.1
 
+# Create a directory for the server's SSH keys
+RUN mkdir -p /root/.ssh
+
 # Add server's public key to known hosts
 RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
 
