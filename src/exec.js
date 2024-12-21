@@ -12,7 +12,7 @@ export const exec = (type, command, successCallback) => {
   try {
     const spawn_process = spawn(
       "ssh",
-      ["rokas@ssh.cloudpeak.dev", "-T", command],
+      ["rokas@host.docker.internal", "-T", command],
       { shell: true }
     );
 

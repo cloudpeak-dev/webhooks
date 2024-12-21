@@ -19,18 +19,8 @@ RUN npm run build
 # Base image for running the application
 FROM node:20.11.1
 
-# Install cloudflared in the container
-RUN apt update && apt install -y wget && \
-  wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb && \
-  dpkg -i cloudflared-linux-arm64.deb && \
-  rm cloudflared-linux-arm64.deb
-
-# Configure SSH
-RUN mkdir -p /root/.ssh && \
-  echo "Host ssh.cloudpeak.dev\n  ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h" >> /root/.ssh/config
-
 # Add server's public key to known hosts
-RUN echo "ssh.cloudpeak.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
+RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
 
 # Set the working directory
 WORKDIR /app
