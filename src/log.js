@@ -1,15 +1,22 @@
 class Log {
   #log;
   #date;
+  #isRunning;
 
   constructor() {
     this.#log = "";
     this.#date = new Date().toISOString();
+    this.#isRunning = false;
   }
 
   init() {
     this.#log = "";
     this.#date = new Date().toISOString();
+    this.#isRunning = true;
+  }
+
+  finalize() {
+    this.#isRunning = false;
   }
 
   append(log) {
@@ -22,6 +29,10 @@ class Log {
 
   getDate() {
     return this.#date;
+  }
+
+  isRunning() {
+    return this.#isRunning;
   }
 }
 

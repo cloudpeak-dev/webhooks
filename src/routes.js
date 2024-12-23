@@ -13,6 +13,12 @@ const webhooks = new Webhooks({
   secret: GITHUB_WEBHOOK_SECRET,
 });
 
+app.get("/logs/current/status", (req, res) => {
+  res.json({
+    isRunning: log.isRunning(),
+  });
+});
+
 app.get("/logs/current", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
 
@@ -20,6 +26,7 @@ app.get("/logs/current", (req, res) => {
 });
 
 app.get("/logs", async (req, res) => {
+  console.error("Testing logs");
   const logs = await getLogs();
 
   res.json({

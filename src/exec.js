@@ -50,5 +50,7 @@ export const exec = (type, command, successCallback) => {
     });
   } catch (error) {
     throw error;
+  } finally {
+    log.finalize();
   }
 };
