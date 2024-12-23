@@ -51,7 +51,7 @@ app.post("/github", async (req, res) => {
   }
 
   const command =
-    "dokku git:sync --build portfolio https://github.com/rokaskasperavicius/rokaskasperavicius.git";
+    "dokku git:sync --build rokaskasperavicius https://github.com/rokaskasperavicius/rokaskasperavicius.git";
 
   try {
     exec("github", command);
@@ -69,7 +69,7 @@ app.post("/datocms", async (req, res) => {
     return;
   }
 
-  const command = "dokku ps:rebuild portfolio";
+  const command = "dokku ps:rebuild rokaskasperavicius";
 
   try {
     exec("datocms", command, async () => {
