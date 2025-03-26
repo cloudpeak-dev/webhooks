@@ -1,6 +1,7 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
 import axios from "axios";
+import LokiTransport from "winston-loki";
 import { createLogger, format, transports } from "winston";
 
 const { combine, timestamp, prettyPrint, colorize, errors } = format;
@@ -20,7 +21,11 @@ const logger = createLogger({
     timestamp(),
     prettyPrint()
   ),
-  transports: [new transports.Console()],
+  transports: [
+    new LokiTransport({
+      host: "http://loki:3100",
+    }),
+  ],
 });
 
 const webhooks = new Webhooks({
