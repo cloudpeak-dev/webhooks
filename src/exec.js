@@ -29,20 +29,17 @@ export const exec = (type, command, successCallback) => {
     spawn_process.on("close", async (code) => {
       log.append(`Process exited with code ${code}`);
 
+      await insertLog({
+        type: type,
+        date: log.getDate(),
+        log: log.getLog(),
+      });
+
       // Only Success
-      if (code === 0) {
-        await insertLog({
-          type: type,
-          date: log.getDate(),
-          log: log.getLog(),
-        });
-
-        if (successCallback) await successCallback();
-
+      if (successCallback) {
+        await successCallback();
         return;
       }
-
-      throw new Error(`Process exited with code ${code}`);
     });
 
     spawn_process.on("error", (error) => {
