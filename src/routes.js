@@ -12,8 +12,6 @@ import { log } from "./log.js";
 
 const app = express.Router();
 
-// TO DO: Fix LokiTransport
-
 // https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
 const logger = createLogger({
   format: combine(
@@ -26,11 +24,12 @@ const logger = createLogger({
     new transports.Console(),
 
     new LokiTransport({
+      // TO DO: Fix LokiTransport as this attached monitoring_default network
       host: "http://loki:3100",
       labels: { app: "webhooks-winston" },
-      json: true,
-      format: format.json(),
-      replaceTimestamp: true,
+      // json: true,
+      // format: format.json(),
+      // replaceTimestamp: true,
       onConnectionError: (err) => console.error(err),
     }),
   ],
