@@ -1,9 +1,8 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
 import axios from "axios";
-import LokiTransport from "winston-loki";
 import { createLogger, format, transports } from "winston";
-
+import LokiTransport from "winston-loki";
 const { combine, timestamp, prettyPrint, colorize, errors } = format;
 
 import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
@@ -13,24 +12,26 @@ import { log } from "./log.js";
 
 const app = express.Router();
 
+// TO DO: Fix LokiTransport
+
 // https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
 const logger = createLogger({
+  format: combine(
+    errors({ stack: true }),
+    colorize(),
+    timestamp(),
+    prettyPrint()
+  ),
   transports: [
+    new transports.Console(),
+
     new LokiTransport({
-      host: "http://127.0.0.1:3100",
+      host: "http://loki:3100",
       labels: { app: "webhooks-winston" },
       json: true,
       format: format.json(),
       replaceTimestamp: true,
       onConnectionError: (err) => console.error(err),
-    }),
-    new transports.Console({
-      format: format.combine(
-        errors({ stack: true }),
-        colorize(),
-        timestamp(),
-        prettyPrint()
-      ),
     }),
   ],
 });
