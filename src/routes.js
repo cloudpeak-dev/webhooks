@@ -15,15 +15,23 @@ const app = express.Router();
 
 // https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
 const logger = createLogger({
-  format: combine(
-    errors({ stack: true }),
-    colorize(),
-    timestamp(),
-    prettyPrint()
-  ),
+  // format: combine(
+  //   errors({ stack: true }),
+  //   colorize(),
+  //   timestamp(),
+  //   prettyPrint()
+  // ),
   transports: [
     new LokiTransport({
-      host: "http://loki:3100",
+      host: "http://127.0.0.1:3100",
+      labels: { app: "webhooks-winston" },
+      json: true,
+      format: format.json(),
+      replaceTimestamp: true,
+      onConnectionError: (err) => console.error(err),
+    }),
+    new transports.Console({
+      format: format.combine(format.simple(), format.colorize()),
     }),
   ],
 });
