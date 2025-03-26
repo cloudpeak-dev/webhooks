@@ -17,7 +17,8 @@ const app = express.Router();
 const logger = createLogger({
   transports: [
     new LokiTransport({
-      host: "http://loki:3100",
+      host: "host.docker.internal",
+      port: 3100,
       labels: { app: "webhooks-winston" },
       json: true,
       format: format.json(),
