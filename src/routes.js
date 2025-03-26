@@ -1,7 +1,9 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
 import axios from "axios";
-import winston from "winston";
+import { createLogger, format, transports } from "winston";
+
+const { combine, timestamp, prettyPrint, colorize, errors } = format;
 
 import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
 import { DATOCMS_WEBHOOK_SECRET, GITHUB_WEBHOOK_SECRET } from "./constants.js";
@@ -10,8 +12,15 @@ import { log } from "./log.js";
 
 const app = express.Router();
 
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()],
+// https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
+const logger = createLogger({
+  format: combine(
+    errors({ stack: true }),
+    colorize(),
+    timestamp(),
+    prettyPrint()
+  ),
+  transports: [new transports.Console()],
 });
 
 const webhooks = new Webhooks({
@@ -33,6 +42,11 @@ app.get("/logs/current", (req, res) => {
 app.get("/logs", async (req, res) => {
   const logs = await getLogs();
 
+  logger.log({
+    level: "info",
+    message: "Logs info message",
+    test: "asdasdassdad",
+  });
   logger.info("Logs info message");
   logger.error(new Error("Logs error message"));
 
