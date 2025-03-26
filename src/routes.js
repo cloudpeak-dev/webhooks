@@ -27,9 +27,9 @@ const logger = createLogger({
       // TO DO: Fix LokiTransport as this attached monitoring_default network
       host: "http://loki:3100",
       labels: { app: "webhooks-winston" },
-      // json: true,
-      // format: format.json(),
-      // replaceTimestamp: true,
+      json: true,
+      format: format.json(),
+      replaceTimestamp: true,
       onConnectionError: (err) => console.error(err),
     }),
   ],
