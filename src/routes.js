@@ -54,11 +54,6 @@ app.get("/logs/current", (req, res) => {
 app.get("/logs", async (req, res) => {
   const logs = await getLogs();
 
-  logger.log({
-    level: "info",
-    message: "Logs info message",
-    test: "asdasdassdad",
-  });
   logger.info("Logs info message");
   logger.error(new Error("Logs error message"));
 
@@ -89,7 +84,7 @@ app.post("/github", async (req, res) => {
   try {
     exec("github", command);
   } catch (error) {
-    console.error(error.toString());
+    logger.error(error);
   }
 
   res.status(202).send("Webhook triggered");
@@ -114,7 +109,7 @@ app.post("/datocms", async (req, res) => {
       );
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
 
     await axios.post("https://webhooks.datocms.com/2qpNGQSrtl/deploy-results", {
       status: "error",
