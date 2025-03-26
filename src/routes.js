@@ -1,6 +1,7 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
 import axios from "axios";
+import winston from "winston";
 
 import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
 import { DATOCMS_WEBHOOK_SECRET, GITHUB_WEBHOOK_SECRET } from "./constants.js";
@@ -8,6 +9,10 @@ import { exec } from "./exec.js";
 import { log } from "./log.js";
 
 const app = express.Router();
+
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()],
+});
 
 const webhooks = new Webhooks({
   secret: GITHUB_WEBHOOK_SECRET,
@@ -26,8 +31,10 @@ app.get("/logs/current", (req, res) => {
 });
 
 app.get("/logs", async (req, res) => {
-  console.error("Testing logs");
   const logs = await getLogs();
+
+  logger.info("Logs info message");
+  logger.error(new Error("Logs error message"));
 
   res.json({
     results: logs,
@@ -56,7 +63,7 @@ app.post("/github", async (req, res) => {
   try {
     exec("github", command);
   } catch (error) {
-    console.error(error);
+    console.error(error.toString());
   }
 
   res.status(202).send("Webhook triggered");

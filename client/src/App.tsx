@@ -27,9 +27,9 @@ function App() {
 
   useEffect(() => {
     const handleFetch = async () => {
-      const response = await fetch("/api/logs/current/status");
-      const result = await response.json();
-      console.log(result);
+      // const response = await fetch("/api/logs/current/status");
+      // const result = await response.json();
+      // console.log(result);
       // setOutput(result.results[0].log);
     };
 
