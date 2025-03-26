@@ -84,7 +84,8 @@ app.post("/github", async (req, res) => {
   try {
     exec("github", command);
   } catch (error) {
-    logger.error(error);
+    console.error(error);
+    // logger.error(error);
   }
 
   res.status(202).send("Webhook triggered");
