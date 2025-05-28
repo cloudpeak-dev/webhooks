@@ -127,7 +127,7 @@ app.post("/datocms/invalidate-cache", async (req, res) => {
       params: { token },
     });
   } catch (error) {
-    logger.error(error?.message);
+    logger.error(error);
     res.status(500).send("Something went wrong");
 
     return;
