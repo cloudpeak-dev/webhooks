@@ -40,6 +40,9 @@ export const exec = (type, command, successCallback) => {
         await successCallback();
         return;
       }
+
+      // TODO: Add error handling, the server crashes here
+      // throw new Error("No success callback provided");
     });
 
     spawn_process.on("error", (error) => {

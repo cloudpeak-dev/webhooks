@@ -1,5 +1,4 @@
 import "dotenv/config";
-import "express-async-errors";
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -39,7 +38,8 @@ app.use(express.static(path.resolve(__dirname, "./client/dist")));
 app.use("/api", routes);
 
 // Serve React App
-app.get("*", (req, res) => {
+// https://expressjs.com/en/guide/migrating-5.html#path-syntax
+app.get("*splat", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/dist", "index.html"));
 });
 
