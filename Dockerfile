@@ -1,5 +1,5 @@
 # Base image for building the application
-FROM node:24.1.0-slim AS builder
+FROM node:24.1.0 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY ./client/ .
 RUN npm run build
 
 # Base image for running the application
-FROM node:24.1.0-slim
+FROM node:24.1.0
 
 # Create a directory for the server's SSH keys
 RUN mkdir -p /root/.ssh
