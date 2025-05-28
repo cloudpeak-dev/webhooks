@@ -123,11 +123,9 @@ app.post("/datocms/invalidate-cache", async (req, res) => {
   const token = req.query.token;
 
   try {
-    await axios.post(
-      "https://www.rokaskasperavicius.dev/api/invalidate-cache",
-      null,
-      { params: { token } }
-    );
+    await axios.post("https://www.rokas.site/api/invalidate-cache", null, {
+      params: { token },
+    });
   } catch (error) {
     logger.error(error?.message);
     res.status(500).send("Something went wrong");
