@@ -1,13 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-background: #363636;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: theme(colors.text);
+  color: var(--color-text);
   background-color: #242424;
 
   font-synthesis: none;
