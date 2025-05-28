@@ -90,7 +90,7 @@ app.post("/github", async (req, res) => {
   res.status(202).send("Webhook triggered");
 });
 
-app.post("/datocms", async (req, res) => {
+app.post("/datocms/rebuild", async (req, res) => {
   // Validate that the request is coming from DatoCMS
   if (req.body.SECRET !== DATOCMS_WEBHOOK_SECRET) {
     res.status(401).send("Unauthorized");
@@ -117,6 +117,25 @@ app.post("/datocms", async (req, res) => {
   }
 
   res.status(202).send("Webhook triggered");
+});
+
+app.post("/datocms/invalidate-cache", async (req, res) => {
+  const token = req.query.token;
+
+  try {
+    await axios.post(
+      "https://www.rokaskasperavicius.dev/api/invalidate-cache",
+      null,
+      { params: { token } }
+    );
+  } catch (error) {
+    logger.error(error?.message);
+    res.status(500).send("Something went wrong");
+
+    return;
+  }
+
+  res.status(200).send("Cache invalidated");
 });
 
 export default app;
