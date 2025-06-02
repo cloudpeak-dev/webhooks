@@ -4,6 +4,7 @@ import { spawn } from "child_process";
 import { insertLog } from "./mongodb.js";
 import { getGithubLatestCommit } from "./utils/github.js";
 import { log } from "./log.js";
+import { logger } from "./utils/logger.js";
 
 export const exec = (type, command, successCallback) => {
   // TODO: Check first if there is no dokku lock set
@@ -22,7 +23,11 @@ export const exec = (type, command, successCallback) => {
       const cleanData = stripAnsi(data.toString());
       log.append(cleanData);
 
-      console.log(log.getDate());
+      try {
+        console.log(log.getDate());
+      } catch (error) {
+        logger.error("Error getting log date:", error);
+      }
     });
 
     spawn_process.stderr.on("data", (data) => {
