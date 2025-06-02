@@ -1,39 +1,14 @@
 import express from "express";
 import { Webhooks } from "@octokit/webhooks";
 import axios from "axios";
-import { createLogger, format, transports } from "winston";
-import LokiTransport from "winston-loki";
-const { combine, timestamp, prettyPrint, colorize, errors } = format;
 
 import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
 import { DATOCMS_WEBHOOK_SECRET, GITHUB_WEBHOOK_SECRET } from "./constants.js";
 import { exec } from "./exec.js";
+import { logger } from "./utils/logger.js";
 import { log } from "./log.js";
 
 const app = express.Router();
-
-// https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
-const logger = createLogger({
-  format: combine(
-    errors({ stack: true }),
-    colorize(),
-    timestamp(),
-    prettyPrint()
-  ),
-  transports: [
-    new transports.Console(),
-
-    new LokiTransport({
-      // TO DO: Fix LokiTransport as this attached monitoring_default network
-      host: "http://loki:3100",
-      labels: { app: "webhooks-winston" },
-      json: true,
-      format: format.json(),
-      replaceTimestamp: true,
-      onConnectionError: (err) => console.error(err),
-    }),
-  ],
-});
 
 const webhooks = new Webhooks({
   secret: GITHUB_WEBHOOK_SECRET,

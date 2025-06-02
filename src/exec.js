@@ -2,6 +2,7 @@ import stripAnsi from "strip-ansi";
 import { spawn } from "child_process";
 
 import { insertLog } from "./mongodb.js";
+import { getGithubLatestCommit } from "./utils/github.js";
 import { log } from "./log.js";
 
 export const exec = (type, command, successCallback) => {
@@ -29,10 +30,13 @@ export const exec = (type, command, successCallback) => {
     spawn_process.on("close", async (code) => {
       log.append(`Process exited with code ${code}`);
 
+      const githubCommit = await getGithubLatestCommit();
+
       await insertLog({
         type: type,
         date: log.getDate(),
         log: log.getLog(),
+        githubCommitData: githubCommit,
       });
 
       // Only Success

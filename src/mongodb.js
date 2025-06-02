@@ -12,9 +12,14 @@ const client = new MongoClient(MONGODB_URI, {
 
 const getCollection = () => client.db("webhooks").collection("logs");
 
-export const insertLog = async ({ date, log, type }) => {
+export const insertLog = async ({ date, log, type, githubCommitData }) => {
   const collection = await getCollection();
-  await collection.insertOne({ type, date, log });
+  await collection.insertOne({
+    type,
+    date,
+    log,
+    github_commit_data: githubCommitData,
+  });
 };
 
 export const getLogs = async () => {
