@@ -21,6 +21,8 @@ export const exec = (type, command, successCallback) => {
       // Strip ANSI codes
       const cleanData = stripAnsi(data.toString());
       log.append(cleanData);
+
+      console.log(log.getDate());
     });
 
     spawn_process.stderr.on("data", (data) => {
