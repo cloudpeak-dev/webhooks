@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchAllLogs } from '@/features/logs/logs'
+import { fetchAllLogs } from '@/features/logs'
 
 export const Dashboard = () => {
   const allLogs = useQuery({ queryKey: ['logs'], queryFn: fetchAllLogs })
