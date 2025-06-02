@@ -32,9 +32,14 @@ export const exec = (type, command, successCallback) => {
 
       const githubCommit = await getGithubLatestCommit();
 
+      const endDate = new Date();
+      const runningTimeInSeconds =
+        Math.abs(endDate - log.getStartDate()) / 1000;
+
       await insertLog({
         type: type,
-        date: log.getDate(),
+        start_date: log.getDate(),
+        running_time_in_seconds: runningTimeInSeconds,
         log: log.getLog(),
         githubCommitData: githubCommit,
       });

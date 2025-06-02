@@ -1,17 +1,18 @@
 class Log {
   #log;
-  #date;
+  #dateStart;
+  #dateEnd;
   #isRunning;
 
   constructor() {
     this.#log = "";
-    this.#date = new Date().toISOString();
+    this.#dateStart = new Date();
     this.#isRunning = false;
   }
 
   init() {
     this.#log = "";
-    this.#date = new Date().toISOString();
+    this.#dateStart = new Date();
     this.#isRunning = true;
   }
 
@@ -27,8 +28,8 @@ class Log {
     return this.#log;
   }
 
-  getDate() {
-    return this.#date;
+  getStartDate() {
+    return this.#dateStart;
   }
 
   isRunning() {

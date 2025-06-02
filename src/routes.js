@@ -6,6 +6,7 @@ import { getLatestDate, getLogs, insertLog } from "./mongodb.js";
 import { DATOCMS_WEBHOOK_SECRET, GITHUB_WEBHOOK_SECRET } from "./constants.js";
 import { exec } from "./exec.js";
 import { logger } from "./utils/logger.js";
+import { getGithubLatestCommit } from "./utils/github.js";
 import { log } from "./log.js";
 
 const app = express.Router();
@@ -22,15 +23,19 @@ app.get("/logs/current/status", (req, res) => {
 
 app.get("/logs/current", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
-
   res.send(log.getLog());
+});
+
+app.get("/github/current", async (req, res) => {
+  const { data: githubData } = await getGithubLatestCommit();
+
+  res.json({
+    ...githubData,
+  });
 });
 
 app.get("/logs", async (req, res) => {
   const logs = await getLogs();
-
-  logger.info("Logs info message");
-  logger.error(new Error("Logs error message"));
 
   res.json({
     results: logs,
