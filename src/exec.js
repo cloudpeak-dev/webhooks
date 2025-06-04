@@ -18,7 +18,7 @@ export const exec = (type, command, successCallback) => {
       { shell: true }
     );
 
-    logger.info("Starting child process", spawn_process.pid);
+    logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
 
     spawn_process.stdout.on("data", (data) => {
       // Strip ANSI codes
