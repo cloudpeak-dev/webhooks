@@ -18,6 +18,7 @@ export const insertLog = async ({
   log,
   type,
   githubCommitData,
+  success,
 }) => {
   const collection = await getCollection();
   await collection.insertOne({
@@ -26,6 +27,7 @@ export const insertLog = async ({
     running_time_in_seconds,
     log,
     github_commit_data: githubCommitData,
+    success,
   });
 };
 

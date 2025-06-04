@@ -18,6 +18,8 @@ export const exec = (type, command, successCallback) => {
       { shell: true }
     );
 
+    logger.info("Starting child process", spawn_process.pid);
+
     spawn_process.stdout.on("data", (data) => {
       // Strip ANSI codes
       const cleanData = stripAnsi(data.toString());
@@ -43,6 +45,7 @@ export const exec = (type, command, successCallback) => {
         running_time_in_seconds: runningTimeInSeconds,
         log: log.getLog(),
         githubCommitData: githubCommit,
+        success: code === 0,
       });
 
       // Only Success
