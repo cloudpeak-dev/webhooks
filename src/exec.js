@@ -40,6 +40,7 @@ export const exec = (type, command, successCallback) => {
       await insertLog({
         type: type,
         start_date: log.getStartDate(),
+        end_date: endDate,
         running_time_in_seconds: runningTimeInSeconds,
         log: log.getLog(),
         githubCommitData: githubCommit,
