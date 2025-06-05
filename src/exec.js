@@ -5,7 +5,6 @@ import { insertLog } from "./mongodb.js";
 import { getGithubLatestCommit } from "./utils/github.js";
 import { log } from "./log.js";
 import { logger } from "./utils/logger.js";
-import kill from "tree-kill";
 
 export const exec = (type, command, successCallback) => {
   // TODO: Check first if there is no dokku lock set
@@ -18,16 +17,6 @@ export const exec = (type, command, successCallback) => {
       ["rokas@host.docker.internal", "-T", command],
       { shell: true }
     );
-
-    // https://man7.org/linux/man-pages/man7/signal.7.html
-    setTimeout(() => {
-      // spawn_process.kill();
-      // process.kill(spawn_process.pid, "SIGINT");
-      kill(spawn_process.pid, "SIGTERM");
-      logger.info('"kill" signal sent to the process');
-    }, 20000);
-
-    // logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
 
     spawn_process.stdout.on("data", (data) => {
       // Strip ANSI codes
