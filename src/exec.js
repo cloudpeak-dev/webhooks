@@ -25,7 +25,7 @@ export const exec = (type, command, successCallback) => {
       // process.kill(spawn_process.pid, "SIGINT");
       kill(spawn_process.pid, "SIGTERM");
       logger.info('"kill" signal sent to the process');
-    }, 10000);
+    }, 20000);
 
     // logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
 
