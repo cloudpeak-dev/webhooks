@@ -14,7 +14,7 @@ export const exec = (type, command, successCallback) => {
   try {
     const spawn_process = spawn(
       "ssh",
-      ["rokas@host.docker.internal", "-T", command],
+      ["webhooks@host.docker.internal", "-T", command],
       { shell: true }
     );
 
