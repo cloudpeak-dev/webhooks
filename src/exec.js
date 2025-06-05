@@ -18,7 +18,12 @@ export const exec = (type, command, successCallback) => {
       { shell: true }
     );
 
-    logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
+    // https://man7.org/linux/man-pages/man7/signal.7.html
+    setTimeout(() => {
+      spawn_process.kill("SIGKILL");
+    }, 10000);
+
+    // logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
 
     spawn_process.stdout.on("data", (data) => {
       // Strip ANSI codes
