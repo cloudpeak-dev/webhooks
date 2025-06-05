@@ -20,7 +20,8 @@ export const exec = (type, command, successCallback) => {
 
     // https://man7.org/linux/man-pages/man7/signal.7.html
     setTimeout(() => {
-      spawn_process.kill("SIGKILL");
+      spawn_process.kill("SIGINFO");
+      logger.info('"SIGINFO" signal sent to the process');
     }, 10000);
 
     // logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
