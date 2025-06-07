@@ -1,49 +1,50 @@
 # Base image for building the application
-FROM node:24.1.0 AS builder
+FROM node:24.1.0 AS base
 
-# Set the working directory
+# Install server dependencies
+FROM base AS server-deps
 WORKDIR /app
+COPY ./package.json ./package-lock.json ./
+RUN npm ci --only=production
 
-# Copy package.json and package-lock.json
+# Install client dependencies
+FROM base AS client-deps
+WORKDIR /app
 COPY ./client/package.json ./client/package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install --ignore-scripts
-
-# Copy the rest of the application code
+# Build the client application with client dependencies
+FROM base AS client-builder
+WORKDIR /app
+COPY --from=client-deps /app/node_modules ./node_modules
 COPY ./client/ .
-
-# Build the Vite React application
 RUN npm run build
 
-# Base image for running the application
-FROM node:24.1.0
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
 
-# Create a directory for the server's SSH keys
-RUN mkdir -p /root/.ssh
+# Create .ssh folder which will be populated with necessary keys to allow SSH access
+# Node user is available from the node base image
+RUN mkdir -p /home/node/.ssh \
+  && chown -R node:node /home/node/.ssh \
+  && chmod -R 700 /home/node/.ssh
 
 # Add server's public key to known hosts
-RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> ~/.ssh/known_hosts
+RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> /home/node/.ssh/known_hosts \
+  && chown -R node:node /home/node/.ssh/known_hosts \
+  && chmod 600 /home/node/.ssh/known_hosts
 
-# Set the working directory
-WORKDIR /app
+# Copy everything to run the server
+COPY --chown=node:node ./src/ ./src/
+COPY --from=server-deps /app/node_modules ./node_modules
+COPY --from=client-builder --chown=node:node /app/dist ./client/dist
 
-# Copy the server files
-COPY ./src/ ./src/
-COPY ./package.json ./
-COPY ./package-lock.json ./
-
-# Copy the build files from the builder stage
-COPY --from=builder /app/dist ./client/dist
-
-# Copy server files
-COPY --from=builder /app/package*.json ./client
-
-# Install only production dependencies
-RUN npm install --only=production
+USER node
 
 # Expose the port that the Express server will listen on
 EXPOSE 8080
+ENV PORT=8080
 
 # Start the server
 CMD ["node", "./src/index.js"]

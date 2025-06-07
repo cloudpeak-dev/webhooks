@@ -14,6 +14,7 @@ const getCollection = () => client.db("webhooks").collection("logs");
 
 export const insertLog = async ({
   start_date,
+  end_date,
   running_time_in_seconds,
   log,
   type,
@@ -24,6 +25,7 @@ export const insertLog = async ({
   await collection.insertOne({
     type,
     start_date,
+    end_date,
     running_time_in_seconds,
     log,
     github_commit_data: githubCommitData,
@@ -38,7 +40,7 @@ export const getLogs = async () => {
 
 export const getLatestDate = async () => {
   const collection = await getCollection();
-  const log = await collection.find({}, { sort: { date: -1 } }).toArray();
+  const log = await collection.find({}, { sort: { end_date: -1 } }).toArray();
 
-  return log[0]?.date;
+  return log[0]?.end_date;
 };

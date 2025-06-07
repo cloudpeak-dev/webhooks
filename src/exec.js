@@ -14,11 +14,9 @@ export const exec = (type, command, successCallback) => {
   try {
     const spawn_process = spawn(
       "ssh",
-      ["rokas@host.docker.internal", "-T", command],
+      ["webhooks@host.docker.internal", "-T", command],
       { shell: true }
     );
-
-    logger.info(`Starting child process ${JSON.stringify(spawn_process)}`);
 
     spawn_process.stdout.on("data", (data) => {
       // Strip ANSI codes
@@ -42,6 +40,7 @@ export const exec = (type, command, successCallback) => {
       await insertLog({
         type: type,
         start_date: log.getStartDate(),
+        end_date: endDate,
         running_time_in_seconds: runningTimeInSeconds,
         log: log.getLog(),
         githubCommitData: githubCommit,
