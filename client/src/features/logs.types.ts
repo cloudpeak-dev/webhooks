@@ -15,6 +15,8 @@ export type GithubCommitData = {
 export type Log = {
   _id: string
   start_date: string
+  end_date: string
+  success: boolean
   running_time_in_seconds: number
   log: string
   type: 'github' | 'datocms'

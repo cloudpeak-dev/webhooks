@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { formatDistanceToNowStrict } from 'date-fns'
 import { Link } from 'react-router'
 
 import { DateDistance } from '@/components/date-distance'
