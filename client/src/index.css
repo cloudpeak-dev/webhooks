@@ -3,6 +3,9 @@
 @theme {
   --color-text: rgba(255, 255, 255, 0.87);
   --color-background: #363636;
+  --color-dark: #242424;
+  --color-ready: #50e3c2;
+  --color-failed: #ff0000;
 }
 
 :root {
@@ -11,7 +14,7 @@
   font-weight: 400;
 
   color: var(--color-text);
-  background-color: #242424;
+  background-color: var(--color-dark);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
