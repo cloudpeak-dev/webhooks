@@ -7,6 +7,7 @@ import cors from "cors";
 
 import routes from "./routes.js";
 import { PORT } from "./constants.js";
+import { logger } from "./utils/logger.js";
 
 const __dirname = path.resolve();
 
@@ -41,6 +42,11 @@ app.use("/api", routes);
 // https://expressjs.com/en/guide/migrating-5.html#path-syntax
 app.get("*splat", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/dist", "index.html"));
+});
+
+app.use((err, req, res, next) => {
+  logger.error(err);
+  res.status(500).send("Something broke!");
 });
 
 app.listen(PORT, () => {
