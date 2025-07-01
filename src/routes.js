@@ -15,6 +15,11 @@ const webhooks = new Webhooks({
   secret: GITHUB_WEBHOOK_SECRET,
 });
 
+app.get("/error", (req, res) => {
+  // This route is used to test error handling
+  throw new Error("This is a test error");
+});
+
 app.get("/logs/current/status", (req, res) => {
   res.json({
     isRunning: log.isRunning(),
