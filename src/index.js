@@ -15,9 +15,9 @@ const __dirname = path.resolve();
 const app = express();
 
 // Security Setup
-// app.set("trust proxy", 1 /* number of proxies between user and server */);
+app.set("trust proxy", 1 /* number of proxies between user and server */);
 
-// app.use(helmet());
+app.use(helmet());
 // app.use(cors());
 app.use(
   rateLimit({
