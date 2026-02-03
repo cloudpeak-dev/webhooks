@@ -19,7 +19,7 @@ app.set("trust proxy", 1 /* number of proxies between user and server */);
 
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    // contentSecurityPolicy: false,
   }),
 );
 
