@@ -8,6 +8,7 @@ import { logger } from "./utils/logger.js";
 
 export const exec = (type, command, successCallback) => {
   // TODO: Check first if there is no dokku lock set
+  // TODO: Check for log init race conditions and throw error if there is one
 
   log.init();
 
