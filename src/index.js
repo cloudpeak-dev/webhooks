@@ -15,14 +15,12 @@ const __dirname = path.resolve();
 const app = express();
 
 // Security Setup
-app.set("trust proxy", 1 /* number of proxies between user and server */);
-
 app.use(
   helmet({
-    // contentSecurityPolicy: false,
+    // without this the browser doesn't load the js/css files from 192.168.1.0/24
+    contentSecurityPolicy: false,
   }),
 );
-
 app.use(cors());
 app.use(
   rateLimit({
