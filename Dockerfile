@@ -31,7 +31,7 @@ RUN mkdir -p /home/node/.ssh \
   && chmod -R 700 /home/node/.ssh
 
 # Add server's public key to known hosts
-RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDdw5VRy59xmdt7gpb9VuYo1pVYM2Cfjc5XAp94WCqYm" >> /home/node/.ssh/known_hosts \
+RUN echo "host.docker.internal ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOgUn8x4x4L3rOG5EmDPUh4gSKr0Y95jKMkl/PM+sq6W" >> /home/node/.ssh/known_hosts \
   && chown -R node:node /home/node/.ssh/known_hosts \
   && chmod 600 /home/node/.ssh/known_hosts
 
