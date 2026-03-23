@@ -15,12 +15,7 @@ const __dirname = path.resolve();
 const app = express();
 
 // Security Setup
-app.use(
-  helmet({
-    // without this the browser doesn't load the js/css files from 192.168.1.0/24
-    contentSecurityPolicy: false,
-  }),
-);
+app.use(helmet({}));
 app.use(cors());
 app.use(
   rateLimit({
