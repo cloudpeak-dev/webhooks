@@ -17,11 +17,11 @@ const app = express();
 // Security Setup
 app.set("trust proxy", 1 /* number of proxies between user and server */);
 
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: false,
-//   }),
-// );
+app.use(
+  helmet({
+    // contentSecurityPolicy: false,
+  }),
+);
 
 app.use(cors());
 app.use(
