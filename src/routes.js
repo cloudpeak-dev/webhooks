@@ -111,7 +111,7 @@ app.post("/datocms/invalidate-cache", async (req, res) => {
   let success = true;
 
   try {
-    await axios.post("https://www.rokas.site/api/invalidate-cache", null, {
+    await axios.post("https://rokas.site/api/invalidate-cache", null, {
       params: { token },
     });
   } catch (error) {
